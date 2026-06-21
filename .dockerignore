@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+coverage
+.git
+.agents
+.codex
+.vscode
+.idea
+Dockerfile
+docker-compose.yml
