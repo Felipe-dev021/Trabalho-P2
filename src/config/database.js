@@ -22,17 +22,41 @@ const sequelize = new Sequelize(databaseUrl, {
   }
 });
 
+async function retryConnection(label, operation, retries = 10, delayMs = 3000) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      console.error(`${label} connection attempt ${attempt}/${retries} failed: ${error.message}`);
+
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+  }
+
+  throw lastError;
+}
+
 async function connectPostgres() {
-  await sequelize.authenticate();
-  await sequelize.sync();
+  await retryConnection('PostgreSQL', async () => {
+    await sequelize.authenticate();
+    await sequelize.sync();
+  });
+
   console.log('PostgreSQL connected successfully.');
 }
 
 async function connectMongo() {
   mongoose.set('strictQuery', true);
 
-  await mongoose.connect(mongoUri, {
-    serverSelectionTimeoutMS: 30000
+  await retryConnection('MongoDB', async () => {
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 30000
+    });
   });
 
   console.log('MongoDB connected successfully.');
