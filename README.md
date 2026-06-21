@@ -144,22 +144,3 @@ docker compose run --rm api npm test
 | `npm start` | Inicia a API em modo produção dentro do container |
 | `npm run dev` | Inicia a API com nodemon dentro do container |
 | `npm test` | Executa testes de integração dentro do container |
-
-## Publicação no GitHub
-
-O arquivo `.env` foi mantido no projeto porque o enunciado pede um `.env` completo com URLs e senhas prontas para Docker.
-Essas credenciais são apenas para ambiente local de prova e não devem ser usadas em produção.
-
-Antes de publicar, confirme que `node_modules` não será enviado:
-
-```bash
-git status
-```
-
-Depois, publique normalmente:
-
-```bash
-git add .
-git commit -m "Documenta API em português"
-git push
-```
